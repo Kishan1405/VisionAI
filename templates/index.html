@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VisionAI Live</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            color: #e0e6ed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background: transparent;
+        }
+        .animated-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            background: linear-gradient(120deg, #2b5876, #4e4376, #fc38fc, #0072ff, #00c6ff, #2b5876);
+            background-size: 200% 200%;
+            animation: gradientMove 8s ease-in-out infinite;
+            opacity: 0.5;
+        }
+        @keyframes gradientMove {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            background: rgba(24, 32, 44, 0.85);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            padding: 2.5rem 2.5rem 2rem 2.5rem;
+            max-width: 350px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(8px);
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+            background: linear-gradient(90deg, #00c6ff, #0072ff 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        label {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            display: block;
+            letter-spacing: 0.5px;
+        }
+        select {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            border: none;
+            background: #1a2636;
+            color: #e0e6ed;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            outline: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: background 0.2s;
+        }
+        select:focus {
+            background: #22304a;
+        }
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+        }
+        button {
+            flex: 1;
+            padding: 0.8rem 0;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #00c6ff, #0072ff 80%);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,198,255,0.15);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+        }
+        button::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, #00c6ff, #0072ff, #00c6ff, #00fff0, #00c6ff);
+            filter: blur(18px);
+            opacity: 0.6;
+            z-index: -1;
+            animation: magic-glow 2.5s linear infinite;
+            transition: opacity 0.3s;
+        }
+        @keyframes magic-glow {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+        }
+        button:hover {
+            background: linear-gradient(90deg, #00fff0, #00c6ff 80%);
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 0 32px 0 #00c6ff80, 0 4px 32px 0 #00fff080;
+        }
+        button:hover::before {
+            opacity: 1;
+            filter: blur(28px);
+        }
+        .stop-btn {
+            background: linear-gradient(90deg, #ff416c, #ff4b2b 80%);
+        }
+        .stop-btn::before {
+            background: conic-gradient(from 0deg, #ff416c, #ff4b2b, #ff416c, #ffb347, #ff416c);
+        }
+        .stop-btn:hover {
+            background: linear-gradient(90deg, #ff4b2b, #ff416c 80%);
+            box-shadow: 0 0 32px 0 #ff416c80, 0 4px 32px 0 #ffb34780;
+        }
+        .stop-btn:hover::before {
+            opacity: 1;
+            filter: blur(28px);
+        }
+        p {
+            margin-top: 2rem;
+            font-size: 1rem;
+            color: #b0bac9;
+            letter-spacing: 0.2px;
+        }
+        b {
+            color: #00c6ff;
+        }
+        @media (max-width: 500px) {
+            .container {
+                padding: 1.2rem 0.5rem 1rem 0.5rem;
+            }
+            h1 {
+                font-size: 1.3rem;
+            }
+            .btn-group {
+                flex-direction: column;
+                gap: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="container" id="mainContainer">
+        <h1>VisionAI Live</h1>
+        <div style="margin-bottom:1rem;color:#00c6ff;font-weight:600;"></div>
+        <form method="post" id="main-form">
+            <label for="mode">Select Video Mode</label>
+            <select name="mode" id="mode">
+                <option value="camera">Camera</option>
+                <option value="screen">Screen</option>
+                <option value="none">None</option>
+            </select>
+            <div class="btn-group">
+                <button type="submit" name="action" value="start">Start</button>
+                <button type="submit" name="action" value="stop" class="stop-btn">Stop</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
