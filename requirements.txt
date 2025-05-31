@@ -1,6 +1,5 @@
-Flask
-google-genai
+flask
+streamlit
 opencv-python
 pyaudio
-pillow
-mss
+google-generativeai
